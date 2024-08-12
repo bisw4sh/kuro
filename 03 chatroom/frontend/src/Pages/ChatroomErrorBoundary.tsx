@@ -8,10 +8,13 @@ export const formAction = async ({ request }: { request: Request }) => {
   const formData = await request.formData();
 
   try {
-    const res = await fetch(`/api/room/${formData.get("roomNumber")}`);
+    const res = await fetch(`/api/rooms/${formData.get("chatroomName")}`);
     const responseData = await res.json();
-    if (!res.ok) redirect(".");
-    if (responseData?.exist) return redirect(`./${formData.get("roomNumber")}`);
+    if (responseData.success) {
+      return redirect(`./${responseData?.roomName}`);
+    } else {
+      return redirect("/");
+    }
   } catch (error) {
     console.log(error);
     return redirect(".");
@@ -26,14 +29,14 @@ const ChatroomErrorBoundary = () => {
         className="flex flex-col justify-center items-center gap-3"
         method="POST"
       >
-        <Label htmlFor="roomNumber" className="self-start">
+        <Label htmlFor="chatroomName" className="self-start">
           Type Room number to enter
         </Label>
         <Input
           type="text"
-          id="roomNumber"
-          name="roomNumber"
-          placeholder="Room Number"
+          id="chatroomName"
+          name="chatroomName"
+          placeholder="Room Name"
         />
         <footer className="w-full flex justify-between items-center">
           <Button onClick={() => navigate("/")}>Back</Button>
